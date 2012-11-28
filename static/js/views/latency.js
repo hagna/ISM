@@ -127,8 +127,8 @@ define([
                 end = new Date(d[2], d[0]-1, d[1]).getTime() / 1000
             }
             
-            //var url = '/couch/stats/_design/matt/_view/gammalatency';
-            var url = 'latency';
+            var url = 'http://i.sm/couch/stats/_design/matt/_view/gammalatency';
+            //var url = 'latency';
             var opt = '?startkey=' + encodeURI(JSON.stringify(start));
             opt += '&endkey=' + encodeURI(JSON.stringify(end));
             return url += opt

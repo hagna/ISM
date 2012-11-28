@@ -28,7 +28,11 @@ define([
 
         drawGraphs: function() {
             // This should only be called once after render
-            var maxram = 32000000
+
+            var ram_color = '#4572A7';
+            var cpu_color = '#AA4643';
+            var db_color = '#89A54E';
+            var maxram = 32000000000
             if (this.model.get('id') == 'web0') {
                 maxram = 16000000000
             }
@@ -38,9 +42,10 @@ define([
                 min:0,
                 max:maxram,
                 title: "Ram",
-                titleFontColor:'#4572A7',
+                titleFontColor:ram_color,
                 humanFriendly: true,
-                humanFriendlyDecimal: 1
+                humanFriendlyDecimal: 1,
+                valueFontColor:ram_color
             });
             
             this.g2 = new JustGage({
@@ -49,7 +54,8 @@ define([
                 min:0,
                 max:4,
                 title: "CPU Load",
-                titleFontColor:'#AA4643'
+                titleFontColor:cpu_color,
+                valueFontColor:cpu_color
             });
             
             this.g3 = new JustGage({
@@ -57,18 +63,20 @@ define([
                 value:0,
                 min:0,
                 max:200,
-                title: "Connections",
-                titleFontColor:'#89A54E'
+                title: "DB Connections",
+                titleFontColor:db_color,
+                valueFontColor:db_color
             }); 
 
-            this.dbconns = this.drawMiniLine('dbconn', 'Connections', '#89A54E');
-            this.cpuload = this.drawMiniLine('cpuload', 'CPU Load', '#AA4643');
-            this.memused = this.drawMiniLine('memused', 'Ram', '#4572A7');
+            this.dbconns = this.drawMiniLine('dbconn', 'DB Connections', db_color);
+            this.cpuload = this.drawMiniLine('cpuload', 'CPU Load', cpu_color);
+            this.memused = this.drawMiniLine('memused', 'Ram', ram_color);
 
         },
 
         refreshGraphs: function(d) {
-            
+           
+            var t = new Date().getTime();
             // GUAGES
             this.g1.refresh(this.model.get('memused') * 1000);
             this.g2.refresh(this.model.get('cpuload'));
@@ -76,13 +84,13 @@ define([
            
             // CHARTS
             var db = this.dbconns.get('dbconn');
-            db.addPoint(this.model.get('dbconn'));
+            db.addPoint([t, this.model.get('dbconn')]);
 
             var mem = this.memused.get('memused');
-            mem.addPoint(this.model.get('memused'));
+            mem.addPoint([t, this.model.get('memused')]);
 
             var cpu = this.cpuload.get('cpuload');
-            cpu.addPoint(this.model.get('cpuload'));
+            cpu.addPoint([t, this.model.get('cpuload')]);
         },
 
         drawMiniLine: function(id, name, color) {
@@ -102,6 +110,7 @@ define([
                     text: null
                 },
                 xAxis: {
+                    type: 'datetime',
                     gridLineWidth:0,
                     minorGridLineWidth:0,
                     minorTickLength:0,

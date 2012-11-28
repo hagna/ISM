@@ -81,17 +81,14 @@ class MiniWrap(Resource):
     def render_GET(self, request):
         web0 = {
             'id':'web0',
-            'maxram':200
         }
 
         web1 = {
             'id':'web1',
-            'maxram':200
         }
 
         web2 = {
             'id':'web2',
-            'maxram':200
         }
 
         return json.dumps([
