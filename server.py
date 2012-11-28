@@ -46,7 +46,7 @@ class MainResource(Resource):
     Handles the root directory
     """
     def render_GET(self, request):
-        return jrender(request, 'index.html')
+        return jrender(request, 'dashboard.html')
 
 
 class MenuItems(Resource):
@@ -125,29 +125,32 @@ class MiniViews(Resource):
         }
         return json.dumps(webcrap)
 
-#URL HANDLING
-root = Resource()
-root.putChild('', MainResource())
+def setupResources():
+    #URL HANDLING
+    root = Resource()
+    root.putChild('', MainResource())
 
-js_resource = File('./static/js')
-css_resource = File('./static/css')
-img_resource = File('./static/img')
-template_resource = File('./templates/')
+    js_resource = File('./static/js')
+    css_resource = File('./static/css')
+    img_resource = File('./static/img')
+    template_resource = File('./templates/')
 
-#STATIC STUFF
-root.putChild('js', js_resource)
-root.putChild('css', css_resource)
-root.putChild('img', img_resource)
+    #STATIC STUFF
+    root.putChild('js', js_resource)
+    root.putChild('css', css_resource)
+    root.putChild('img', img_resource)
 
-# JS TEMPLATES
-root.putChild('templates', template_resource)
+    # JS TEMPLATES
+    root.putChild('templates', template_resource)
 
-#stuff
-root.putChild("menu", MenuItems())
-root.putChild("minis", MiniWrap())
-root.putChild("servers", MiniWrap())
+    #stuff
+    root.putChild("menu", MenuItems())
+    root.putChild("minis", MiniWrap())
+    root.putChild("servers", MiniWrap())
+    return root
 
-factory = Site(root)
-reactor.listenTCP(8990, factory)
-reactor.run()
 
+if __name__ == '__main__':
+    factory = Site(setupResources())
+    reactor.listenTCP(8990, factory)
+    reactor.run()
